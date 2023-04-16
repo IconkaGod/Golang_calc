@@ -8,51 +8,33 @@ import (
 )
 
 var Roman = map[string]int{
-	"I":  1,
-	"IV": 4,
-	"V":  5,
-	"IX": 9,
+	"C":  100,
+	"L":  50,
 	"X":  10,
+	"IX": 9,
+	"V":  5,
+	"IV": 4,
+	"I":  1,
+}
+
+var Romana = map[int]string{
+	100: "C",
+	50:  "L",
+	10:  "X",
+	9:   "IX",
+	5:   "V",
+	4:   "IV",
+	1:   "I",
 }
 
 func intToRoman(num int) string {
 	var calc string
 
-	for num >= 100 {
-		num -= 100
-		calc += "C"
-	}
-	for num >= 90 {
-		num -= 90
-		calc += "XC"
-	}
-	for num >= 50 {
-		num -= 50
-		calc += "L"
-	}
-	for num >= 40 {
-		num -= 40
-		calc += "XL"
-	}
-	for num >= 10 {
-		num -= 10
-		calc += "X"
-	}
-	for num >= 9 {
-		num -= 9
-		calc += "IX"
-	}
-	for num >= 5 {
-		num -= 5
-		calc += "V"
-	}
-	for num >= 4 {
-		num -= 4
-		calc += "IV"
-	}
-	for num >= 1 {
-		num -= 1
-		calc += "I"
+	for i, j := range Romana {
+		for num >= i {
+			num -= i
+			calc += j
+		}
 	}
 
 	return calc
