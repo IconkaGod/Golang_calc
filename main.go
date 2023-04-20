@@ -5,36 +5,86 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
-var Roman = map[string]int{
-	"C":  100,
-	"L":  50,
-	"X":  10,
-	"IX": 9,
-	"V":  5,
-	"IV": 4,
-	"I":  1,
+var RomanNumerals = map[string]int{
+	"I": 1,
+	"V": 5,
+	"X": 10,
+	"L": 50,
+	"C": 100,
+	"D": 500,
+	"M": 1000,
 }
 
-var Romana = map[int]string{
-	100: "C",
-	50:  "L",
-	10:  "X",
-	9:   "IX",
-	5:   "V",
-	4:   "IV",
-	1:   "I",
+func romanToInt(s string) int {
+	sum := 0
+	greatest := 0
+	for i := len(s) - 1; i >= 0; i-- {
+		letter := s[i]
+		num := RomanNumerals[string(letter)]
+		if num >= greatest {
+			greatest = num
+			sum = sum + num
+			continue
+		}
+		sum = sum - num
+	}
+
+	return sum
 }
 
 func intToRoman(num int) string {
 	var calc string
 
-	for i, j := range Romana {
-		for num >= i {
-			num -= i
-			calc += j
-		}
+	if num <= 0 {
+		return "Error"
+	}
+
+	for num >= 100 {
+		num -= 100
+		calc += "C"
+	}
+
+	for num >= 90 {
+		num -= 90
+		calc += "XC"
+	}
+
+	for num >= 50 {
+		num -= 50
+		calc += "L"
+	}
+
+	for num >= 40 {
+		num -= 40
+		calc += "XL"
+	}
+
+	for num >= 10 {
+		num -= 10
+		calc += "X"
+	}
+
+	for num >= 9 {
+		num -= 9
+		calc += "IX"
+	}
+
+	for num >= 5 {
+		num -= 5
+		calc += "V"
+	}
+
+	for num >= 4 {
+		num -= 4
+		calc += "IV"
+	}
+
+	for num >= 1 {
+		num -= 1
+		calc += "I"
 	}
 
 	return calc
@@ -44,21 +94,8 @@ func calcRoman(first, second, action string) string {
 	var firstRom = 0
 	var secondRom = 0
 
-	for k, v := range first {
-		if k < len(first)-1 && Roman[string(first[k+1])] > Roman[string(first[k])] {
-			firstRom -= Roman[string(v)]
-		} else {
-			firstRom += Roman[string(v)]
-		}
-	}
-
-	for k, v := range second {
-		if k < len(first)-1 && Roman[string(first[k+1])] > Roman[string(first[k])] {
-			secondRom -= Roman[string(v)]
-		} else {
-			secondRom += Roman[string(v)]
-		}
-	}
+	firstRom = romanToInt(first)
+	secondRom = romanToInt(second)
 
 	if action == "-" && firstRom < secondRom {
 		return "Error"
@@ -67,13 +104,13 @@ func calcRoman(first, second, action string) string {
 	if firstRom > 0 && firstRom <= 10 && secondRom > 0 && secondRom <= 10 {
 		switch action {
 		case "+":
-			firstRom = firstRom + secondRom
+			firstRom += secondRom
 		case "-":
-			firstRom = firstRom - secondRom
+			firstRom -= secondRom
 		case "/":
-			firstRom = firstRom / secondRom
+			firstRom /= secondRom
 		case "*":
-			firstRom = firstRom * secondRom
+			firstRom *= secondRom
 		}
 	}
 
@@ -119,6 +156,9 @@ func calculate(arr string) string {
 
 	first := arr[0:pos]
 	second := arr[pos+1 : len(arr)-2]
+
+	first = strings.ReplaceAll(first, " ", "")
+	second = strings.ReplaceAll(second, " ", "")
 
 	if checkRoman(first, second) {
 		return calcRoman(first, second, action)
