@@ -39,6 +39,7 @@ func intToRoman(num int) string {
 	var calc string
 
 	if num <= 0 {
+		swt = false
 		return "Error"
 	}
 
@@ -97,7 +98,13 @@ func calcRoman(first, second, action string) string {
 	firstRom = romanToInt(first)
 	secondRom = romanToInt(second)
 
+	if firstRom > 10 || secondRom > 10 {
+		swt = false
+		return "Error"
+	}
+
 	if action == "-" && firstRom < secondRom {
+		swt = false
 		return "Error"
 	}
 
@@ -150,6 +157,7 @@ func calculate(arr string) string {
 	}
 
 	if countOperands != 1 {
+		swt = false
 		return "Error"
 	}
 	action := string(arr[pos])
@@ -164,6 +172,7 @@ func calculate(arr string) string {
 		return calcRoman(first, second, action)
 	} else {
 		if len(first) == 0 || len(second) == 0 {
+			swt = false
 			return "Error"
 		}
 
@@ -182,6 +191,7 @@ func calculate(arr string) string {
 				calc = strconv.Itoa(a * b)
 			}
 		} else {
+			swt = false
 			return "Error"
 		}
 	}
@@ -189,13 +199,13 @@ func calculate(arr string) string {
 	return calc
 }
 
+var swt = true
+
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	for {
+	for swt {
 		str, _ := reader.ReadString('\n')
-
 		fmt.Print(calculate(str), "\n")
-
 	}
 
 }
