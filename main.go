@@ -12,17 +12,13 @@ var RomanNumerals = map[string]int{
 	"I": 1,
 	"V": 5,
 	"X": 10,
-	"L": 50,
-	"C": 100,
-	"D": 500,
-	"M": 1000,
 }
 
-func romanToInt(s string) int {
+func RomanToInt(str string) int {
 	sum := 0
 	greatest := 0
-	for i := len(s) - 1; i >= 0; i-- {
-		letter := s[i]
+	for i := len(str) - 1; i >= 0; i-- {
+		letter := str[i]
 		num := RomanNumerals[string(letter)]
 		if num >= greatest {
 			greatest = num
@@ -35,122 +31,94 @@ func romanToInt(s string) int {
 	return sum
 }
 
-func intToRoman(num int) string {
-	var calc string
-
-	if num <= 0 {
-		swt = false
-		return "Error"
-	}
+func IntToRoman(num int) string {
+	var str string
 
 	for num >= 100 {
 		num -= 100
-		calc += "C"
+		str += "C"
 	}
 
 	for num >= 90 {
 		num -= 90
-		calc += "XC"
+		str += "XC"
 	}
 
 	for num >= 50 {
 		num -= 50
-		calc += "L"
+		str += "L"
 	}
 
 	for num >= 40 {
 		num -= 40
-		calc += "XL"
+		str += "XL"
 	}
 
 	for num >= 10 {
 		num -= 10
-		calc += "X"
+		str += "X"
 	}
 
 	for num >= 9 {
 		num -= 9
-		calc += "IX"
+		str += "IX"
 	}
 
 	for num >= 5 {
 		num -= 5
-		calc += "V"
+		str += "V"
 	}
 
 	for num >= 4 {
 		num -= 4
-		calc += "IV"
+		str += "IV"
 	}
 
 	for num >= 1 {
 		num -= 1
-		calc += "I"
+		str += "I"
 	}
 
-	return calc
+	return str
 }
 
-func calcRoman(first, second, action string) string {
-	var firstRom = 0
-	var secondRom = 0
-
-	firstRom = romanToInt(first)
-	secondRom = romanToInt(second)
-
-	if firstRom > 10 || secondRom > 10 {
-		swt = false
-		return "Error"
-	}
-
-	if action == "-" && firstRom < secondRom {
-		swt = false
-		return "Error"
-	}
-
-	if firstRom > 0 && firstRom <= 10 && secondRom > 0 && secondRom <= 10 {
-		switch action {
-		case "+":
-			firstRom += secondRom
-		case "-":
-			firstRom -= secondRom
-		case "/":
-			firstRom /= secondRom
-		case "*":
-			firstRom *= secondRom
-		}
-	}
-
-	return intToRoman(firstRom)
-}
-
-func checkRoman(first, second string) bool {
-	for i := 0; i < len(first); i++ {
-		if first[i] == 'I' || first[i] == 'X' || first[i] == 'V' {
+func checkRoman(str string) bool {
+	for i := 0; i < len(str); i++ {
+		if str[i] == 'I' || str[i] == 'V' || str[i] == 'X' {
 			continue
 		} else {
 			return false
 		}
 	}
-
-	for i := 0; i < len(second); i++ {
-		if second[i] == 'I' || second[i] == 'X' || second[i] == 'V' {
-			continue
-		} else {
-			return false
-		}
-	}
-
 	return true
 }
 
-func calculate(arr string) string {
-	var calc string
+func calc(action string, first, second int) int {
+	if first < 1 || first > 10 || second < 1 || second > 10 {
+		swt = false
+	}
+
+	switch action {
+	case "+":
+		first += second
+	case "-":
+		first -= second
+	case "*":
+		first *= second
+	case "/":
+		first /= second
+	}
+
+	return first
+}
+
+func calculate(str string) string {
 	pos := 0
 	countOperands := 0
+	var answer string
 
-	for i := 0; i < len(arr); i++ {
-		if arr[i] == '+' || arr[i] == '-' || arr[i] == '/' || arr[i] == '*' {
+	for i := 0; i < len(str); i++ {
+		if str[i] == '+' || str[i] == '-' || str[i] == '/' || str[i] == '*' {
 			pos += i
 			countOperands++
 		}
@@ -160,43 +128,29 @@ func calculate(arr string) string {
 		swt = false
 		return "Error"
 	}
-	action := string(arr[pos])
 
-	first := arr[0:pos]
-	second := arr[pos+1 : len(arr)-2]
+	action := string(str[pos])
 
-	first = strings.ReplaceAll(first, " ", "")
-	second = strings.ReplaceAll(second, " ", "")
+	firstNum := str[0:pos]
+	secondNum := str[pos+1 : len(str)]
 
-	if checkRoman(first, second) {
-		return calcRoman(first, second, action)
+	if !checkRoman(firstNum) && !checkRoman(secondNum) {
+		first, _ := strconv.Atoi(firstNum)
+		second, _ := strconv.Atoi(secondNum)
+
+		answer = strconv.Itoa(calc(action, first, second))
+	} else if checkRoman(firstNum) && checkRoman(secondNum) {
+		if RomanToInt(firstNum) < RomanToInt(secondNum) {
+			swt = false
+			return "Error"
+		}
+		answer = IntToRoman(calc(action, RomanToInt(firstNum), RomanToInt(secondNum)))
 	} else {
-		if len(first) == 0 || len(second) == 0 {
-			swt = false
-			return "Error"
-		}
-
-		a, _ := strconv.Atoi(first)
-		b, _ := strconv.Atoi(second)
-
-		if a > 0 && a <= 10 && b > 0 && b <= 10 {
-			switch action {
-			case "+":
-				calc = strconv.Itoa(a + b)
-			case "-":
-				calc = strconv.Itoa(a - b)
-			case "/":
-				calc = strconv.Itoa(a / b)
-			case "*":
-				calc = strconv.Itoa(a * b)
-			}
-		} else {
-			swt = false
-			return "Error"
-		}
+		swt = false
+		return "Error"
 	}
 
-	return calc
+	return answer
 }
 
 var swt = true
@@ -204,7 +158,10 @@ var swt = true
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	for swt {
+		fmt.Println("Input num:")
 		str, _ := reader.ReadString('\n')
+		str = strings.TrimSpace(str)
+		str = strings.ReplaceAll(str, " ", "")
 		fmt.Print(calculate(str), "\n")
 	}
 
