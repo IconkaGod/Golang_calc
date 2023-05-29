@@ -140,7 +140,7 @@ func calculate(str string) string {
 
 		answer = strconv.Itoa(calc(action, first, second))
 	} else if checkRoman(firstNum) && checkRoman(secondNum) {
-		if RomanToInt(firstNum) < RomanToInt(secondNum) || calc(action, RomanToInt(firstNum), RomanToInt(secondNum)) == 0 {
+		if calc(action, RomanToInt(firstNum), RomanToInt(secondNum)) == 0 || calc(action, RomanToInt(firstNum), RomanToInt(secondNum)) < 0 {
 			swt = false
 			return "Error"
 		}
