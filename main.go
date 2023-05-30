@@ -12,6 +12,9 @@ var RomanNumerals = map[string]int{
 	"I": 1,
 	"V": 5,
 	"X": 10,
+	"i": 1,
+	"v": 5,
+	"x": 10,
 }
 
 func RomanToInt(str string) int {
@@ -84,7 +87,7 @@ func IntToRoman(num int) string {
 
 func checkRoman(str string) bool {
 	for i := 0; i < len(str); i++ {
-		if str[i] == 'I' || str[i] == 'V' || str[i] == 'X' {
+		if str[i] == 'I' || str[i] == 'V' || str[i] == 'X' || str[i] == 'i' || str[i] == 'v' || str[i] == 'x' {
 			continue
 		} else {
 			return false
